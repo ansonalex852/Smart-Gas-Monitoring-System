@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GasGuard — Create Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181b22;
+      --border: #232730;
+      --accent: #00e5ff;
+      --accent2: #ff3d3d;
+      --accent3: #39ff14;
+      --text: #c8d0de;
+      --text-dim: #4a5568;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-body: 'Exo 2', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: grid-move 20s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes grid-move {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 40px; }
+    }
+    .wrap {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 460px;
+      animation: slide-up 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
+      opacity: 0; transform: translateY(30px);
+    }
+    @keyframes slide-up { to { opacity: 1; transform: translateY(0); } }
+    .logo-block { text-align: center; margin-bottom: 30px; }
+    .logo-hex {
+      width: 56px; height: 56px;
+      background: var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin: 0 auto 14px;
+      box-shadow: 0 0 40px rgba(0,229,255,0.4);
+    }
+    .logo-title { font-size: 1.8rem; font-weight: 800; letter-spacing: 4px; color: #fff; }
+    .logo-title span { color: var(--accent); }
+    .logo-sub { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); letter-spacing: 3px; margin-top: 5px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 36px;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent3), transparent);
+    }
+    .card-title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem; letter-spacing: 3px;
+      color: var(--text-dim); margin-bottom: 24px;
+    }
+    .card-title::before { content: '// '; color: var(--accent3); }
+
+    .field { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem; letter-spacing: 2px;
+      color: var(--text-dim); margin-bottom: 7px;
+    }
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); font-size: 1rem; opacity: 0.5; pointer-events: none;
+    }
+    input[type="text"], input[type="email"], input[type="password"], select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px 12px 42px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    select { padding-left: 42px; cursor: pointer; }
+    select option { background: var(--surface2); }
+    input:focus, select:focus {
+      border-color: var(--accent3);
+      box-shadow: 0 0 0 3px rgba(57,255,20,0.1);
+    }
+    input::placeholder { color: var(--text-dim); }
+
+    .eye-btn {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; color: var(--text-dim);
+      cursor: pointer; font-size: 1rem; padding: 4px; transition: color 0.2s;
+    }
+    .eye-btn:hover { color: var(--accent); }
+
+    /* Password strength */
+    .strength-bar { margin-top: 8px; }
+    .strength-track {
+      height: 4px; background: var(--surface2);
+      border-radius: 2px; overflow: hidden; margin-bottom: 4px;
+    }
+    .strength-fill {
+      height: 100%; width: 0;
+      border-radius: 2px;
+      transition: width 0.3s, background 0.3s;
+    }
+    .strength-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem; color: var(--text-dim);
+    }
+
+    /* Role badge */
+    .role-note {
+      font-family: var(--font-mono);
+      font-size: 0.65rem; color: var(--text-dim);
+      margin-top: 6px;
+      padding: 6px 10px;
+      background: var(--surface2);
+      border-radius: 4px;
+      border-left: 2px solid var(--accent);
+    }
+
+    .error-msg {
+      display: none;
+      background: rgba(255,61,61,0.1);
+      border: 1px solid rgba(255,61,61,0.3);
+      border-radius: 6px; padding: 10px 14px;
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--accent2); margin-bottom: 18px;
+      align-items: center; gap: 8px;
+    }
+    .error-msg.show { display: flex; }
+    .success-msg {
+      display: none;
+      background: rgba(57,255,20,0.08);
+      border: 1px solid rgba(57,255,20,0.3);
+      border-radius: 6px; padding: 10px 14px;
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--accent3); margin-bottom: 18px;
+      align-items: center; gap: 8px;
+    }
+    .success-msg.show { display: flex; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--accent3);
+      color: #000; border: none;
+      border-radius: 6px; padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 3px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-submit:hover { background: #2fd610; }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit.loading { pointer-events: none; opacity: 0.7; }
+
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 24px 0;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      color: var(--text-dim); letter-spacing: 2px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .login-row { text-align: center; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
+    .login-row a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .login-row a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo-block">
+    <div class="logo-hex">⬡</div>
+    <div class="logo-title">Gas<span>Guard</span></div>
+    <div class="logo-sub">CREATE HOUSEHOLD ACCOUNT</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">NEW MEMBER REGISTRATION</div>
+
+    <div class="error-msg" id="errorMsg"><span>⚠</span><span id="errorText"></span></div>
+    <div class="success-msg" id="successMsg"><span>✓</span><span id="successText"></span></div>
+
+    <form id="registerForm" onsubmit="handleRegister(event)">
+
+      <div class="field">
+        <label>FULL NAME</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="fullname" placeholder="Enter your full name" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>EMAIL ADDRESS</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉</span>
+          <input type="email" id="email" placeholder="your@email.com" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>USERNAME</label>
+        <div class="input-wrap">
+          <span class="input-icon">#</span>
+          <input type="text" id="username" placeholder="Choose a username" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>ROLE</label>
+        <div class="input-wrap">
+          <span class="input-icon">🏠</span>
+          <select id="role">
+            <option value="member">Household Member</option>
+            <option value="admin">Admin (House Owner)</option>
+          </select>
+        </div>
+        <div class="role-note" id="roleNote">Members can view sensor data and alerts.</div>
+      </div>
+
+      <div class="field">
+        <label>PASSWORD</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="password" placeholder="Create a strong password" oninput="checkStrength(this.value)" required/>
+          <button type="button" class="eye-btn" onclick="togglePassword('password', this)">👁</button>
+        </div>
+        <div class="strength-bar">
+          <div class="strength-track"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="strength-label" id="strengthLabel">Enter a password</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>CONFIRM PASSWORD</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="confirm" placeholder="Repeat your password" required/>
+          <button type="button" class="eye-btn" onclick="togglePassword('confirm', this)">👁</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="regBtn">CREATE ACCOUNT</button>
+    </form>
+
+    <div class="divider">EXISTING MEMBER</div>
+    <div class="login-row">Already have an account? <a href="/">SIGN IN</a></div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('role').addEventListener('change', function() {
+    const notes = {
+      member: 'Members can view sensor data and alerts.',
+      admin: 'Admins can manage users and configure sensor thresholds.'
+    };
+    document.getElementById('roleNote').textContent = notes[this.value];
+  });
+
+  function togglePassword(id, btn) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    btn.textContent = input.type === 'password' ? '👁' : '🙈';
+  }
+
+  function checkStrength(pw) {
+    const fill = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+    const levels = [
+      { pct: '0%',   color: 'transparent', text: 'Enter a password' },
+      { pct: '25%',  color: '#ff3d3d',     text: 'WEAK' },
+      { pct: '50%',  color: '#ffaa00',     text: 'FAIR' },
+      { pct: '75%',  color: '#00e5ff',     text: 'GOOD' },
+      { pct: '100%', color: '#39ff14',     text: 'STRONG' },
+    ];
+    const l = pw.length === 0 ? levels[0] : levels[score];
+    fill.style.width = l.pct;
+    fill.style.background = l.color;
+    label.textContent = l.text;
+    label.style.color = l.color === 'transparent' ? 'var(--text-dim)' : l.color;
+  }
+
+  function showError(msg) {
+    document.getElementById('errorText').textContent = msg;
+    document.getElementById('errorMsg').classList.add('show');
+    document.getElementById('successMsg').classList.remove('show');
+  }
+
+  function showSuccess(msg) {
+    document.getElementById('successText').textContent = msg;
+    document.getElementById('successMsg').classList.add('show');
+    document.getElementById('errorMsg').classList.remove('show');
+  }
+
+  async function handleRegister(e) {
+    e.preventDefault();
+    const btn = document.getElementById('regBtn');
+
+    const fullname = document.getElementById('fullname').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const role     = document.getElementById('role').value;
+    const password = document.getElementById('password').value;
+    const confirm  = document.getElementById('confirm').value;
+
+    if (password !== confirm) { showError('Passwords do not match.'); return; }
+    if (password.length < 6)  { showError('Password must be at least 6 characters.'); return; }
+
+    btn.classList.add('loading');
+    btn.textContent = 'CREATING ACCOUNT...';
+
+    try {
+      // FIXED: Removed localhost:5000 to prevent network errors, just use /auth/register
+      const res = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullname, email, username, password, role })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        showSuccess('Account created! Redirecting to login...');
+        // FIXED: Route back to the Flask root instead of login.html
+        setTimeout(() => window.location.href = '/', 1500);
+      } else {
+        showError(data.message || 'Registration failed. Try again.');
+        btn.classList.remove('loading');
+        btn.textContent = 'CREATE ACCOUNT';
+      }
+    } catch (err) {
+      showError('Cannot reach server. Check your connection.');
+      btn.classList.remove('loading');
+      btn.textContent = 'CREATE ACCOUNT';
+    }
+  }
+</script>
+</body>
+</html>
